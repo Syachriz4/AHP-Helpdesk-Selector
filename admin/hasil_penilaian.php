@@ -13,7 +13,10 @@ if (!isset($_SESSION["user"]) || $_SESSION['role'] !== 'admin') {
 // 1. Ambil semua alternatif dari database
 $alternatif_data = query("SELECT alternatif_id, nama_alternatif FROM alternatif ORDER BY alternatif_id");
 
-// 2. Hitung rata-rata AHP dari semua user (GDSS Consensus)
+// 2. Hitung berapa banyak DM yang sudah voting
+$voting_count = query("SELECT COUNT(DISTINCT user_id) as total FROM borda_input")[0]['total'];
+
+// 3. Hitung rata-rata AHP dari semua user (GDSS Consensus)
 $gdss_data = query("
     SELECT 
         apf.alternatif_id,
@@ -23,7 +26,7 @@ $gdss_data = query("
     ORDER BY apf.alternatif_id ASC
 ");
 
-// 3. Ambil hasil Borda (jika sudah dihitung)
+// 4. Ambil hasil Borda (jika sudah dihitung)
 $borda_data = query("
     SELECT alternatif_id, skor_borda, peringkat FROM borda_hasil ORDER BY peringkat ASC
 ");
@@ -32,46 +35,51 @@ $borda_data = query("
 $hasil = [];
 $has_data = false; // Flag untuk cek apakah ada data
 
-foreach ($alternatif_data as $alt) {
-    $alt_id = $alt['alternatif_id'];
-    
-    // Cari nilai AHP dari salah satu user (atau rata-rata jika ingin GDSS)
-    $ahp_value = 0;
-    $gdss_value = 0;
-    $borda_ranking = '-';
-    
-    // Cari di GDSS data
-    foreach ($gdss_data as $gdss) {
-        if ($gdss['alternatif_id'] == $alt_id) {
-            $gdss_value = round($gdss['nilai_gdss'], 4);
-            $has_data = true;
-            break;
+// PENTING: Jika tidak ada DM yang voting, jangan tampilkan data lama
+if ($voting_count == 0) {
+    $has_data = false;
+} else {
+    foreach ($alternatif_data as $alt) {
+        $alt_id = $alt['alternatif_id'];
+        
+        // Cari nilai AHP dari salah satu user (atau rata-rata jika ingin GDSS)
+        $ahp_value = 0;
+        $gdss_value = 0;
+        $borda_ranking = '-';
+        
+        // Cari di GDSS data
+        foreach ($gdss_data as $gdss) {
+            if ($gdss['alternatif_id'] == $alt_id) {
+                $gdss_value = round($gdss['nilai_gdss'], 4);
+                $has_data = true;
+                break;
+            }
         }
-    }
-    
-    // Cari di Borda data
-    foreach ($borda_data as $borda) {
-        if ($borda['alternatif_id'] == $alt_id) {
-            $borda_ranking = $borda['peringkat'];
-            $has_data = true;
-            break;
+        
+        // Cari di Borda data
+        foreach ($borda_data as $borda) {
+            if ($borda['alternatif_id'] == $alt_id) {
+                $borda_ranking = $borda['peringkat'];
+                $has_data = true;
+                break;
+            }
         }
+        
+        // Untuk AHP, ambil dari user manapun (bisa dipilih lebih spesifik jika perlu)
+        $ahp_check = query("SELECT DISTINCT nilai_final FROM ahp_prioritas_final WHERE alternatif_id = $alt_id LIMIT 1");
+        if (!empty($ahp_check)) {
+            $ahp_value = round($ahp_check[0]['nilai_final'], 4);
+            $has_data = true;
+        }
+        
+        $hasil[] = [
+            'alternatif_id' => $alt_id,
+            'nama' => $alt['nama_alternatif'],
+            'ahp' => $ahp_value,
+            'gdss' => $gdss_value,
+            'borda' => $borda_ranking
+        ];
     }
-    
-    // Untuk AHP, ambil dari user manapun (bisa dipilih lebih spesifik jika perlu)
-    $ahp_check = query("SELECT DISTINCT nilai_final FROM ahp_prioritas_final WHERE alternatif_id = $alt_id LIMIT 1");
-    if (!empty($ahp_check)) {
-        $ahp_value = round($ahp_check[0]['nilai_final'], 4);
-        $has_data = true;
-    }
-    
-    $hasil[] = [
-        'alternatif_id' => $alt_id,
-        'nama' => $alt['nama_alternatif'],
-        'ahp' => $ahp_value,
-        'gdss' => $gdss_value,
-        'borda' => $borda_ranking
-    ];
 }
 
 // Siapkan data untuk chart
