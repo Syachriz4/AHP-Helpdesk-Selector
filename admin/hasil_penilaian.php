@@ -112,7 +112,35 @@ $nilaiGDSS = array_map(function($h) { return $h['gdss']; }, $hasil);
 
             <div class="container-fluid mt-4">
 
-                <h3 class="text-gray-800 mb-4">Hasil Penilaian Alternatif</h3>
+                <?php if (isset($_SESSION['success'])) : ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= $_SESSION['success'] ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <?php unset($_SESSION['success']); ?>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['error'])) : ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?= $_SESSION['error'] ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="text-gray-800 mb-0">Hasil Penilaian Alternatif</h3>
+                    
+                    <?php if ($voting_count > 0) : ?>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetModal" title="Reset semua data hasil">
+                            <i class="fas fa-redo"></i> Reset Data
+                        </button>
+                    <?php endif; ?>
+                </div>
 
                 <?php if (!$has_data) : ?>
                     <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -209,6 +237,36 @@ $nilaiGDSS = array_map(function($h) { return $h['gdss']; }, $hasil);
 <script src="../vendor/jquery/jquery.min.js"></script>
 <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Modal Reset Hasil -->
+<div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="resetModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="resetModalLabel">⚠️ Reset Data Hasil Penilaian</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Perhatian!</strong> Tindakan ini akan menghapus:</p>
+                <ul>
+                    <li>✗ Semua data hasil Borda</li>
+                    <li>✗ Semua nilai AHP final</li>
+                    <li>✗ Semua status voting DM</li>
+                </ul>
+                <p class="text-danger mt-3"><strong>Data yang dihapus tidak bisa dikembalikan!</strong></p>
+                <p>Apakah Anda yakin ingin melanjutkan?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <a href="reset_hasil.php" class="btn btn-danger">
+                    <i class="fas fa-redo"></i> Ya, Reset Data
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 // ======== Data Grafik dari Database (via PHP) ========
