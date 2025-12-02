@@ -30,6 +30,8 @@ $borda_data = query("
 
 // Siapkan array final untuk ditampilkan
 $hasil = [];
+$has_data = false; // Flag untuk cek apakah ada data
+
 foreach ($alternatif_data as $alt) {
     $alt_id = $alt['alternatif_id'];
     
@@ -42,6 +44,7 @@ foreach ($alternatif_data as $alt) {
     foreach ($gdss_data as $gdss) {
         if ($gdss['alternatif_id'] == $alt_id) {
             $gdss_value = round($gdss['nilai_gdss'], 4);
+            $has_data = true;
             break;
         }
     }
@@ -50,6 +53,7 @@ foreach ($alternatif_data as $alt) {
     foreach ($borda_data as $borda) {
         if ($borda['alternatif_id'] == $alt_id) {
             $borda_ranking = $borda['peringkat'];
+            $has_data = true;
             break;
         }
     }
@@ -58,6 +62,7 @@ foreach ($alternatif_data as $alt) {
     $ahp_check = query("SELECT DISTINCT nilai_final FROM ahp_prioritas_final WHERE alternatif_id = $alt_id LIMIT 1");
     if (!empty($ahp_check)) {
         $ahp_value = round($ahp_check[0]['nilai_final'], 4);
+        $has_data = true;
     }
     
     $hasil[] = [
@@ -101,7 +106,7 @@ $nilaiGDSS = array_map(function($h) { return $h['gdss']; }, $hasil);
 
                 <h3 class="text-gray-800 mb-4">Hasil Penilaian Alternatif</h3>
 
-                <?php if (empty($hasil) || (isset($hasil[0]) && $hasil[0]['ahp'] == 0)) : ?>
+                <?php if (!$has_data) : ?>
                     <div class="alert alert-info alert-dismissible fade show" role="alert">
                         <strong>ℹ️ Informasi:</strong> Belum ada data penilaian dari Decision Maker. 
                         Hasil akan muncul setelah DM melakukan voting dan Manager menghitung Borda.

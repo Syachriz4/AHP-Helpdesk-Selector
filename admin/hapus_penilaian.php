@@ -23,7 +23,10 @@ try {
     execute("DELETE FROM ahp_prioritas_final WHERE user_id = $user_id");
     execute("DELETE FROM borda_input WHERE user_id = $user_id");
     
-    $_SESSION['success'] = '✅ Data penilaian user berhasil dihapus. User dapat mengisi penilaian kembali.';
+    // Hapus data borda hasil (karena harus di-recalculate jika ada user yang dihapus)
+    execute("DELETE FROM borda_hasil");
+    
+    $_SESSION['success'] = '✅ Data penilaian user berhasil dihapus. Hasil Borda telah direset. User dapat mengisi penilaian kembali.';
     
 } catch (Exception $e) {
     $_SESSION['error'] = '❌ Error: ' . $e->getMessage();
