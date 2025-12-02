@@ -9,7 +9,7 @@ if (!isset($_SESSION["user"])) {
 }
 
 // Ambil data dari database
-$totalPenilai = countRows("SELECT * FROM users");
+$totalPenilai = countRows("SELECT * FROM users WHERE role = 'dm'");
 $totalAlternatif = countRows("SELECT * FROM alternatif");
 $totalKriteria = countRows("SELECT * FROM kriteria");
 
