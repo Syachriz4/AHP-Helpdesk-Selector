@@ -27,6 +27,8 @@ try {
     // Hapus data perbandingan lama
     execute("DELETE FROM ahp_penilaian_kriteria WHERE user_id = $user_id");
     execute("DELETE FROM ahp_penilaian_alternatif WHERE user_id = $user_id");
+    execute("DELETE FROM ahp_prioritas_final WHERE user_id = $user_id");
+    execute("DELETE FROM borda_input WHERE user_id = $user_id");
     
     // Update perbandingan kriteria
     for ($i=0; $i<count($kriteria_ids); $i++) {
@@ -60,6 +62,10 @@ try {
     
     // Hapus hasil perhitungan lama
     execute("DELETE FROM ahp_prioritas_final WHERE user_id = $user_id");
+    
+    // Include hitung_ahp.php untuk recalculate nilai user
+    require_once '../hitung_ahp.php';
+    hitungBobotKriteria($user_id);
     
     $_SESSION['success'] = '✅ Penilaian user berhasil diperbarui!';
     
