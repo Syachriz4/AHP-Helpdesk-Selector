@@ -132,7 +132,7 @@ foreach ($perbandingan_alternatif as $row) {
                                                     ];
 
                                                     foreach ($options as $num => $label) {
-                                                        $selected = ($value == $num) ? "selected" : "";
+                                                        $selected = ((float)$value == (float)$num) ? "selected" : "";
                                                         echo "<option value='$num' $selected>$label</option>";
                                                     }
                                                     ?>
@@ -194,7 +194,7 @@ foreach ($perbandingan_alternatif as $row) {
 
                                                     <?php
                                                     foreach ($options as $num => $label) {
-                                                        $selected = ($value == $num) ? "selected" : "";
+                                                        $selected = ((float)$value == (float)$num) ? "selected" : "";
                                                         echo "<option value='$num' $selected>$label</option>";
                                                     }
                                                     ?>
