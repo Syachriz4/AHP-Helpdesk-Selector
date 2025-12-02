@@ -37,6 +37,8 @@ try {
             $id_b = $kriteria_ids[$j];
             $fieldname = "kriteria_{$id_a}_{$id_b}";
             $nilai = $_POST[$fieldname] ?? 1;
+            $nilai = (float)$nilai;
+            if ($nilai <= 0) $nilai = 1; // Default ke 1 jika nilai invalid
             
             $sql = "INSERT INTO ahp_penilaian_kriteria (user_id, kriteria1_id, kriteria2_id, nilai) 
                    VALUES ($user_id, $id_a, $id_b, $nilai)";
@@ -52,6 +54,8 @@ try {
                 $alt_id_b = $alternatif_ids[$j];
                 $fieldname = "alt_{$kriteria_id}_{$alt_id_a}_{$alt_id_b}";
                 $nilai = $_POST[$fieldname] ?? 1;
+                $nilai = (float)$nilai;
+                if ($nilai <= 0) $nilai = 1; // Default ke 1 jika nilai invalid
                 
                 $sql = "INSERT INTO ahp_penilaian_alternatif (user_id, kriteria_id, alternatif1_id, alternatif2_id, nilai) 
                        VALUES ($user_id, $kriteria_id, $alt_id_a, $alt_id_b, $nilai)";
@@ -97,7 +101,11 @@ try {
         
         if ($idx_a !== false && $idx_b !== false) {
             $matrix[$idx_a][$idx_b] = $value;
-            $matrix[$idx_b][$idx_a] = 1 / $value;
+            if ($value > 0) {
+                $matrix[$idx_b][$idx_a] = 1 / $value;
+            } else {
+                $matrix[$idx_b][$idx_a] = 1;
+            }
         }
     }
     
@@ -139,7 +147,11 @@ try {
                 
                 if ($alt_idx_a !== false && $alt_idx_b !== false) {
                     $alt_matrix[$alt_idx_a][$alt_idx_b] = $alt_value;
-                    $alt_matrix[$alt_idx_b][$alt_idx_a] = 1 / $alt_value;
+                    if ($alt_value > 0) {
+                        $alt_matrix[$alt_idx_b][$alt_idx_a] = 1 / $alt_value;
+                    } else {
+                        $alt_matrix[$alt_idx_b][$alt_idx_a] = 1;
+                    }
                 }
             }
             
