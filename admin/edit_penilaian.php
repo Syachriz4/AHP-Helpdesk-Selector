@@ -104,8 +104,9 @@ foreach ($perbandingan_alternatif as $row) {
                             <tbody>
 
                                 <?php
-                                foreach ($kriteria_ids as $i => $id_a) {
-                                    for ($j = $i + 1; $j < count($kriteria_ids); $j++) {
+                                for ($i=0; $i<count($kriteria_ids); $i++) {
+                                    for ($j=$i+1; $j<count($kriteria_ids); $j++) {
+                                        $id_a = $kriteria_ids[$i];
                                         $id_b = $kriteria_ids[$j];
                                         $key = $id_a . "|" . $id_b;
                                         $value = $nilai_kriteria[$key] ?? 1;
@@ -118,24 +119,15 @@ foreach ($perbandingan_alternatif as $row) {
 
                                             <td>
                                                 <select class="form-control" name="kriteria_<?= $id_a ?>_<?= $id_b ?>">
-                                                    <?php
-                                                    $options = [
-                                                        1 => "1 - Sama Penting",
-                                                        3 => "3 - Sedikit Lebih Penting",
-                                                        5 => "5 - Lebih Penting",
-                                                        7 => "7 - Sangat Penting",
-                                                        9 => "9 - Mutlak Lebih Penting",
-                                                        0.33 => "0.33 - Sedikit Tidak Penting",
-                                                        0.20 => "0.20 - Tidak Penting",
-                                                        0.14 => "0.14 - Sangat Tidak Penting",
-                                                        0.11 => "0.11 - Mutlak Tidak Penting",
-                                                    ];
-
-                                                    foreach ($options as $num => $label) {
-                                                        $selected = ((float)$value == (float)$num) ? "selected" : "";
-                                                        echo "<option value='$num' $selected>$label</option>";
-                                                    }
-                                                    ?>
+                                                    <option value="1" <?= ((float)$value == 1) ? "selected" : "" ?>>1 - Sama Penting</option>
+                                                    <option value="3" <?= ((float)$value == 3) ? "selected" : "" ?>>3 - Sedikit Lebih Penting</option>
+                                                    <option value="5" <?= ((float)$value == 5) ? "selected" : "" ?>>5 - Lebih Penting</option>
+                                                    <option value="7" <?= ((float)$value == 7) ? "selected" : "" ?>>7 - Sangat Penting</option>
+                                                    <option value="9" <?= ((float)$value == 9) ? "selected" : "" ?>>9 - Mutlak Lebih Penting</option>
+                                                    <option value="0.33" <?= ((float)$value == 0.33) ? "selected" : "" ?>>0.33 - Sedikit Tidak Penting</option>
+                                                    <option value="0.20" <?= ((float)$value == 0.20) ? "selected" : "" ?>>0.20 - Tidak Penting</option>
+                                                    <option value="0.14" <?= ((float)$value == 0.14) ? "selected" : "" ?>>0.14 - Sangat Tidak Penting</option>
+                                                    <option value="0.11" <?= ((float)$value == 0.11) ? "selected" : "" ?>>0.11 - Mutlak Tidak Penting</option>
                                                 </select>
                                             </td>
 
@@ -176,8 +168,9 @@ foreach ($perbandingan_alternatif as $row) {
                                 <tbody>
 
                                 <?php
-                                foreach ($alternatif_ids as $i => $alt_id_a) {
-                                    for ($j = $i + 1; $j < count($alternatif_ids); $j++) {
+                                for ($i=0; $i<count($alternatif_ids); $i++) {
+                                    for ($j=$i+1; $j<count($alternatif_ids); $j++) {
+                                        $alt_id_a = $alternatif_ids[$i];
                                         $alt_id_b = $alternatif_ids[$j];
                                         $key = $alt_id_a . "|" . $alt_id_b;
                                         $value = $nilai_alternatif[$kriteria_id][$key] ?? 1;
@@ -189,15 +182,16 @@ foreach ($perbandingan_alternatif as $row) {
                                             <td><?= $nama_a ?></td>
 
                                             <td>
-                                                <select class="form-control"
-                                                    name="alt_<?= $kriteria_id ?>_<?= $alt_id_a ?>_<?= $alt_id_b ?>">
-
-                                                    <?php
-                                                    foreach ($options as $num => $label) {
-                                                        $selected = ((float)$value == (float)$num) ? "selected" : "";
-                                                        echo "<option value='$num' $selected>$label</option>";
-                                                    }
-                                                    ?>
+                                                <select class="form-control" name="alt_<?= $kriteria_id ?>_<?= $alt_id_a ?>_<?= $alt_id_b ?>">
+                                                    <option value="1" <?= ((float)$value == 1) ? "selected" : "" ?>>1 - Sama Baik</option>
+                                                    <option value="3" <?= ((float)$value == 3) ? "selected" : "" ?>>3 - Sedikit Lebih Baik</option>
+                                                    <option value="5" <?= ((float)$value == 5) ? "selected" : "" ?>>5 - Lebih Baik</option>
+                                                    <option value="7" <?= ((float)$value == 7) ? "selected" : "" ?>>7 - Sangat Baik</option>
+                                                    <option value="9" <?= ((float)$value == 9) ? "selected" : "" ?>>9 - Mutlak Lebih Baik</option>
+                                                    <option value="0.33" <?= ((float)$value == 0.33) ? "selected" : "" ?>>0.33 - Sedikit Tidak Lebih Baik</option>
+                                                    <option value="0.20" <?= ((float)$value == 0.20) ? "selected" : "" ?>>0.20 - Tidak Lebih Baik</option>
+                                                    <option value="0.14" <?= ((float)$value == 0.14) ? "selected" : "" ?>>0.14 - Sangat Tidak Lebih Baik</option>
+                                                    <option value="0.11" <?= ((float)$value == 0.11) ? "selected" : "" ?>>0.11 - Mutlak Tidak Lebih Baik</option>
                                                 </select>
                                             </td>
 
