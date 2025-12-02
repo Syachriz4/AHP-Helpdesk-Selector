@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config.php';
 
 // Kalau sudah login, langsung masuk ke dashboard
 if (isset($_SESSION['user'])) {
@@ -62,11 +63,31 @@ if (isset($_SESSION['user'])) {
                                         <h1 class="h4 text-gray-900 mb-4">Welcome!</h1>
                                     </div>
 
+                                    <?php if (isset($_SESSION['error'])) : ?>
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <?= $_SESSION['error'] ?>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <?php unset($_SESSION['error']); ?>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($_SESSION['success'])) : ?>
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <?= $_SESSION['success'] ?>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <?php unset($_SESSION['success']); ?>
+                                    <?php endif; ?>
+
                                     <!-- Form login -->
                                     <form action="proses_login.php" method="POST" class="user">
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
-                                                name="username" placeholder="Enter Username..." required>
+                                                name="username" placeholder="Username" required>
                                         </div>
 
                                         <div class="form-group">

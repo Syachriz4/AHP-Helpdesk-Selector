@@ -17,12 +17,19 @@
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                     <?= $_SESSION["user"] ?? "User"; ?>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') : ?>
+                        <span class="badge badge-danger">Admin</span>
+                    <?php elseif (isset($_SESSION['jabatan']) && $_SESSION['jabatan'] === 'manager') : ?>
+                        <span class="badge badge-info">Manager</span>
+                    <?php else : ?>
+                        <span class="badge badge-secondary">Staff</span>
+                    <?php endif; ?>
                 </span>
                 <i class="fas fa-user-circle fa-2x text-gray-300"></i>
             </a>
 
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="logout.php">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                     Logout
                 </a>

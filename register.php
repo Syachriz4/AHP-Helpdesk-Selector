@@ -31,6 +31,10 @@
 
 <body class="bg-gradient-primary">
 
+    <?php
+    session_start();
+    ?>
+
     <div class="container">
 
         <div class="card o-hidden border-0 shadow-lg my-5">
@@ -49,6 +53,25 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
+                            <?php if (isset($_SESSION['error'])) : ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <?= $_SESSION['error'] ?>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <?php unset($_SESSION['error']); ?>
+                            <?php endif; ?>
+
+                            <?php if (isset($_SESSION['success'])) : ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <?= $_SESSION['success'] ?>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <?php unset($_SESSION['success']); ?>
+                            <?php endif; ?>
 
                             <form action="proses_register.php" method="POST" class="user">
 

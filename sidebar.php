@@ -34,6 +34,18 @@
             <span>Hasil Analisis</span></a>
     </li>
 
+    <?php if (isset($_SESSION['jabatan']) && $_SESSION['jabatan'] === 'manager') : ?>
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">Manager Only</div>
+
+        <li class="nav-item">
+            <a class="nav-link" href="hasil.php#borda-section">
+                <i class="fas fa-fw fa-check-circle"></i>
+                <span>Hitung Borda</span></a>
+        </li>
+    <?php endif; ?>
+
     <hr class="sidebar-divider d-none d-md-block">
 
     <div class="text-center d-none d-md-inline">

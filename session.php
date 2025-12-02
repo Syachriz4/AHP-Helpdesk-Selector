@@ -1,6 +1,14 @@
 <?php
+// File ini tidak digunakan lagi
+// Login dilakukan melalui proses_login.php
+// Redirect ke login.php jika belum login
+
 session_start();
 
-$_SESSION['user'] = "User 1";
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit;
+}
 
 header("Location: index.php");
+?>
