@@ -49,13 +49,26 @@ if (isset($_POST['edit'])) {
 // DELETE
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    $result = mysqli_query($conn, "DELETE FROM kriteria WHERE kriteria_id=$id");
     
-    if ($result) {
+    try {
+        // Hapus data terkait dalam urutan yang benar (respect foreign key constraints)
+        // 1. Hapus dari ahp_prioritas_alternatif yang mereferensi kriteria ini
+        execute("DELETE FROM ahp_prioritas_alternatif WHERE kriteria_id = $id");
+        
+        // 2. Hapus dari ahp_penilaian_alternatif yang mereferensi kriteria ini
+        execute("DELETE FROM ahp_penilaian_alternatif WHERE kriteria_id = $id");
+        
+        // 3. Hapus dari ahp_penilaian_kriteria yang mereferensi kriteria ini
+        execute("DELETE FROM ahp_penilaian_kriteria WHERE kriteria_id_a = $id OR kriteria_id_b = $id");
+        
+        // 4. Terakhir, hapus kriteria itu sendiri
+        execute("DELETE FROM kriteria WHERE kriteria_id = $id");
+        
         $_SESSION['success'] = '✓ Kriteria berhasil dihapus!';
-    } else {
-        $_SESSION['error'] = '✗ Gagal menghapus kriteria!';
+    } catch (Exception $e) {
+        $_SESSION['error'] = '✗ Gagal menghapus kriteria: ' . $e->getMessage();
     }
+    
     header("Location: kriteria.php");
     exit();
 }

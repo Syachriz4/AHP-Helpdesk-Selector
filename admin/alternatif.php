@@ -49,13 +49,26 @@ if (isset($_POST['edit'])) {
 // DELETE
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    $result = mysqli_query($conn, "DELETE FROM alternatif WHERE alternatif_id=$id");
     
-    if ($result) {
+    try {
+        // Hapus data terkait dalam urutan yang benar (respect foreign key constraints)
+        // 1. Hapus dari ahp_prioritas_alternatif yang mereferensi alternatif ini
+        execute("DELETE FROM ahp_prioritas_alternatif WHERE alternatif_id = $id");
+        
+        // 2. Hapus dari ahp_penilaian_alternatif yang mereferensi alternatif ini
+        execute("DELETE FROM ahp_penilaian_alternatif WHERE alternatif_id_a = $id OR alternatif_id_b = $id");
+        
+        // 3. Hapus dari borda_hasil yang mereferensi alternatif ini
+        execute("DELETE FROM borda_hasil WHERE alternatif_id = $id");
+        
+        // 4. Terakhir, hapus alternatif itu sendiri
+        execute("DELETE FROM alternatif WHERE alternatif_id = $id");
+        
         $_SESSION['success'] = '✓ Alternatif berhasil dihapus!';
-    } else {
-        $_SESSION['error'] = '✗ Gagal menghapus alternatif!';
+    } catch (Exception $e) {
+        $_SESSION['error'] = '✗ Gagal menghapus alternatif: ' . $e->getMessage();
     }
+    
     header("Location: alternatif.php");
     exit();
 }
